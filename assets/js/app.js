@@ -244,19 +244,44 @@
             // Wait a moment for any pending renders
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            // Generate canvas from card
+            // Generate canvas from card with fixed dimensions
+            const cardWidth = 450; // Fixed card width
+            const cardHeight = elements.emergencyCard.offsetHeight;
+
             const canvas = await html2canvas(elements.emergencyCard, {
-                scale: 4,
+                scale: 3,
+                width: cardWidth,
+                height: cardHeight,
                 backgroundColor: '#1a1a2e',
                 logging: false,
                 useCORS: true,
                 allowTaint: true,
                 imageTimeout: 0,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: cardWidth + 100,
+                windowHeight: cardHeight + 100,
                 onclone: function (clonedDoc) {
                     const clonedCard = clonedDoc.getElementById('emergencyCard');
                     if (clonedCard) {
+                        // Fix card size and styling for clean export
                         clonedCard.style.transform = 'none';
                         clonedCard.style.animation = 'none';
+                        clonedCard.style.width = cardWidth + 'px';
+                        clonedCard.style.maxWidth = cardWidth + 'px';
+                        clonedCard.style.margin = '0';
+                        clonedCard.style.boxShadow = 'none';
+                        clonedCard.style.border = '2px solid rgba(255,255,255,0.2)';
+                        clonedCard.style.borderRadius = '16px';
+
+                        // Ensure QR is visible
+                        const qr = clonedDoc.getElementById('qrCode');
+                        if (qr) {
+                            qr.style.width = '80px';
+                            qr.style.height = '80px';
+                            qr.style.maxWidth = '80px';
+                            qr.style.maxHeight = '80px';
+                        }
                     }
                 }
             });
