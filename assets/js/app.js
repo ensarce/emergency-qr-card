@@ -232,7 +232,6 @@
                 allowTaint: true,
                 imageTimeout: 0,
                 onclone: function (clonedDoc) {
-                    // Ensure cloned element has proper styling
                     const clonedCard = clonedDoc.getElementById('emergencyCard');
                     if (clonedCard) {
                         clonedCard.style.transform = 'none';
@@ -241,21 +240,61 @@
                 }
             });
 
-            // Create download link
-            const link = document.createElement('a');
+            // Generate file name
             const name = elements.fullName.value.trim() || 'acil-kart';
             const safeName = name.replace(/[^a-zA-Z0-9çğıöşüÇĞİÖŞÜ\s]/g, '').replace(/\s+/g, '-');
+            const fileName = `${safeName}-acil-kart.png`;
 
-            link.download = `${safeName}-acil-kart.png`;
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
+            // iOS Safari compatible download
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+            if (isIOS) {
+                // For iOS: Open image in new tab (user can long-press to save)
+                const dataUrl = canvas.toDataURL('image/png', 1.0);
+                const newTab = window.open();
+                if (newTab) {
+                    newTab.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=1">
+                            <title>${fileName}</title>
+                            <style>
+                                body { margin: 0; background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: system-ui; }
+                                img { max-width: 100%; height: auto; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+                                p { color: white; margin-top: 20px; text-align: center; padding: 0 20px; }
+                            </style>
+                        </head>
+                        <body>
+                            <img src="${dataUrl}" alt="Acil Kart">
+                            <p>📱 Resmi kaydetmek için basılı tutun ve "Resmi Kaydet" seçin</p>
+                        </body>
+                        </html>
+                    `);
+                    newTab.document.close();
+                }
+            } else {
+                // For other browsers: Use blob for reliable download
+                canvas.toBlob(function (blob) {
+                    if (blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    }
+                }, 'image/png', 1.0);
+            }
 
             // Show success
             btn.innerHTML = `
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                İndirildi!
+                ${isIOS ? 'Açıldı!' : 'İndirildi!'}
             `;
 
             setTimeout(() => {
