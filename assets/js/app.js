@@ -151,8 +151,8 @@
         try {
             qrCodeInstance = new QRCode(elements.qrCodeContainer, {
                 text: qrText || 'Acil Durum Kartı',
-                width: 200,
-                height: 200,
+                width: 80,
+                height: 80,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.L

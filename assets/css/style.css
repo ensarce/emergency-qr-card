@@ -200,22 +200,29 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 #qrCode {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
     background: white;
     border-radius: 8px;
-    padding: 8px;
+    padding: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;
+    overflow: hidden;
 }
 
-#qrCode img {
+#qrCode img,
+#qrCode canvas {
     width: 100% !important;
     height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
     display: block;
+    object-fit: contain;
 }
 
 .qr-label {
