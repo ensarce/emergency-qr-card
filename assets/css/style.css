@@ -448,3 +448,93 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         margin-top: 16px;
     }
 }
+
+/* ===================================
+   Story Mode - Vertical Layout (9:16)
+   For lock screen wallpapers
+   =================================== */
+
+.emergency-card.story-mode {
+    width: 100%;
+    max-width: 360px;
+    min-height: 640px;
+    aspect-ratio: 9 / 16;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.emergency-card.story-mode .card-header {
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.emergency-card.story-mode .card-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 12px;
+}
+
+.emergency-card.story-mode .card-logo svg {
+    width: 36px;
+    height: 36px;
+}
+
+.emergency-card.story-mode .card-title {
+    align-items: center;
+}
+
+.emergency-card.story-mode .title-main {
+    font-size: 20px;
+}
+
+.emergency-card.story-mode .title-sub {
+    font-size: 12px;
+}
+
+.emergency-card.story-mode .card-body {
+    flex-direction: column;
+    flex: 1;
+    gap: 16px;
+}
+
+.emergency-card.story-mode .card-info {
+    order: 2;
+    gap: 12px;
+}
+
+.emergency-card.story-mode .card-qr {
+    order: 1;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.emergency-card.story-mode #qrCode {
+    width: 120px;
+    height: 120px;
+    max-width: 120px;
+    max-height: 120px;
+    padding: 10px;
+}
+
+.emergency-card.story-mode .info-label {
+    font-size: 10px;
+}
+
+.emergency-card.story-mode .info-value {
+    font-size: 16px;
+}
+
+.emergency-card.story-mode .blood-type {
+    font-size: 28px;
+}
+
+.emergency-card.story-mode .card-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    font-size: 14px;
+    font-weight: 600;
+}

@@ -32,10 +32,20 @@
         // QR and actions
         qrCodeContainer: document.getElementById('qrCode'),
         downloadBtn: document.getElementById('downloadBtn'),
-        emergencyCard: document.getElementById('emergencyCard')
+        shareBtn: document.getElementById('shareBtn'),
+        emergencyCard: document.getElementById('emergencyCard'),
+
+        // New feature elements
+        langToggle: document.getElementById('langToggle'),
+        langFlag: document.getElementById('langFlag'),
+        langText: document.getElementById('langText'),
+        normalModeBtn: document.getElementById('normalModeBtn'),
+        storyModeBtn: document.getElementById('storyModeBtn')
     };
 
     let qrCodeInstance = null;
+    let currentLang = localStorage.getItem('lang') || 'tr';
+    let isStoryMode = false;
 
     // ===================================
     // Initialization
@@ -47,6 +57,7 @@
         updatePreview();
         generateQRCode();
         updateDownloadButton();
+        setLanguage(currentLang);
     }
 
     // ===================================
@@ -71,6 +82,24 @@
         // Download button
         if (elements.downloadBtn) {
             elements.downloadBtn.addEventListener('click', downloadCard);
+        }
+
+        // Share button
+        if (elements.shareBtn) {
+            elements.shareBtn.addEventListener('click', shareCard);
+        }
+
+        // Language toggle
+        if (elements.langToggle) {
+            elements.langToggle.addEventListener('click', toggleLanguage);
+        }
+
+        // Story mode buttons
+        if (elements.normalModeBtn) {
+            elements.normalModeBtn.addEventListener('click', () => setStoryMode(false));
+        }
+        if (elements.storyModeBtn) {
+            elements.storyModeBtn.addEventListener('click', () => setStoryMode(true));
         }
     }
 
@@ -430,6 +459,150 @@
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
+    }
+
+    // ===================================
+    // Share Card Function
+    // ===================================
+
+    async function shareCard() {
+        const btn = elements.shareBtn;
+        const originalContent = btn.innerHTML;
+
+        try {
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle></svg>';
+
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            const cardWidth = isStoryMode ? 360 : 450;
+            const cardHeight = elements.emergencyCard.scrollHeight + 20;
+
+            const canvas = await html2canvas(elements.emergencyCard, {
+                scale: 3,
+                width: cardWidth,
+                height: cardHeight,
+                backgroundColor: '#1a1a2e',
+                logging: false,
+                useCORS: true
+            });
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) {
+                    alert(currentLang === 'tr' ? 'Paylaşım başarısız' : 'Share failed');
+                    return;
+                }
+
+                const file = new File([blob], 'acil-durum-karti.png', { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: currentLang === 'tr' ? 'Acil Durum Kartım' : 'My Emergency Card',
+                            text: currentLang === 'tr' ? 'Bu benim acil durum kartım.' : 'This is my emergency card.'
+                        });
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            console.log('Share cancelled');
+                        }
+                    }
+                } else {
+                    alert(currentLang === 'tr' ? 'Tarayıcınız paylaşım özelliğini desteklemiyor. Kartı indirip manuel paylaşabilirsiniz.' : 'Your browser does not support sharing. Please download and share manually.');
+                }
+
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }, 'image/png');
+
+        } catch (error) {
+            console.error('Share failed:', error);
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+        }
+    }
+
+    // ===================================
+    // Language Toggle
+    // ===================================
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'tr' ? 'en' : 'tr';
+        localStorage.setItem('lang', currentLang);
+        setLanguage(currentLang);
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+
+        // Update toggle button
+        if (elements.langFlag) {
+            elements.langFlag.textContent = lang === 'tr' ? '🇹🇷' : '🇬🇧';
+        }
+        if (elements.langText) {
+            elements.langText.textContent = lang === 'tr' ? 'TR' : 'EN';
+        }
+
+        // Update all elements with data-tr and data-en attributes
+        document.querySelectorAll('[data-tr][data-en]').forEach(el => {
+            const text = lang === 'tr' ? el.dataset.tr : el.dataset.en;
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = text;
+            } else {
+                el.textContent = text;
+            }
+        });
+
+        // Update card labels
+        const labels = {
+            'Ad Soyad:': 'Full Name:',
+            'Doğum Tarihi:': 'Date of Birth:',
+            'Kan Grubu:': 'Blood Type:',
+            'Alerjiler:': 'Allergies:',
+            'Acil İletişim:': 'Emergency Contact:',
+            'Tüm Bilgiler İçin Tarayın': 'Scan for Full Info'
+        };
+
+        document.querySelectorAll('.info-label, .qr-label').forEach(el => {
+            const trText = Object.keys(labels).find(key =>
+                el.textContent === key || el.textContent === labels[key]
+            );
+            if (trText) {
+                el.textContent = lang === 'tr' ? trText : labels[trText];
+            }
+        });
+    }
+
+    // ===================================
+    // Story Mode (Vertical Layout)
+    // ===================================
+
+    function setStoryMode(enabled) {
+        isStoryMode = enabled;
+
+        // Update button states
+        if (elements.normalModeBtn && elements.storyModeBtn) {
+            if (enabled) {
+                elements.normalModeBtn.classList.remove('bg-slate-600', 'text-white');
+                elements.normalModeBtn.classList.add('bg-slate-700/50', 'text-slate-400');
+                elements.storyModeBtn.classList.remove('bg-slate-700/50', 'text-slate-400');
+                elements.storyModeBtn.classList.add('bg-slate-600', 'text-white');
+            } else {
+                elements.storyModeBtn.classList.remove('bg-slate-600', 'text-white');
+                elements.storyModeBtn.classList.add('bg-slate-700/50', 'text-slate-400');
+                elements.normalModeBtn.classList.remove('bg-slate-700/50', 'text-slate-400');
+                elements.normalModeBtn.classList.add('bg-slate-600', 'text-white');
+            }
+        }
+
+        // Toggle story mode class on card
+        if (elements.emergencyCard) {
+            if (enabled) {
+                elements.emergencyCard.classList.add('story-mode');
+            } else {
+                elements.emergencyCard.classList.remove('story-mode');
+            }
+        }
     }
 
     // ===================================
