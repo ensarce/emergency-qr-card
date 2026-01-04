@@ -46,6 +46,7 @@
         loadSavedData();
         updatePreview();
         generateQRCode();
+        updateDownloadButton();
     }
 
     // ===================================
@@ -81,6 +82,26 @@
         saveData();
         updatePreview();
         generateQRCode();
+        updateDownloadButton();
+    }
+
+    function updateDownloadButton() {
+        // Require at least name or emergency contact to enable download
+        const hasData = elements.fullName.value.trim() ||
+            elements.emergencyPhone.value.trim() ||
+            elements.bloodType.value;
+
+        if (elements.downloadBtn) {
+            if (hasData) {
+                elements.downloadBtn.disabled = false;
+                elements.downloadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                elements.downloadBtn.title = '';
+            } else {
+                elements.downloadBtn.disabled = true;
+                elements.downloadBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                elements.downloadBtn.title = 'Lütfen en az bir bilgi girin';
+            }
+        }
     }
 
     // ===================================
