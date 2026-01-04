@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Acil Durum QR Kart - Hayat kurtaran bilgilerinizi QR kod ile taşıyın">
+    <meta name="theme-color" content="#dc2626">
+    
+    <title>Acil Kart - Emergency Life-Saver QR Card</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <!-- HTML2Canvas Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <!-- Header -->
+    <header class="py-6 px-4 text-center">
+        <div class="flex items-center justify-center gap-3 mb-2">
+            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">Acil Kart</h1>
+        </div>
+        <p class="text-slate-400 text-sm">Hayat kurtaran bilgilerinizi QR kod ile taşıyın</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 pb-12">
+        <div class="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            
+            <!-- Form Section -->
+            <section class="order-2 lg:order-1">
+                <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 shadow-2xl">
+                    <h2 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Bilgilerinizi Girin
+                    </h2>
+                    
+                    <form id="cardForm" class="space-y-5">
+                        <!-- Personal Info -->
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label for="fullName" class="block text-sm font-medium text-slate-300 mb-2">Ad Soyad *</label>
+                                <input type="text" id="fullName" required placeholder="Ahmet Yılmaz"
+                                    class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
+                            </div>
+                            <div class="form-group">
+                                <label for="birthDate" class="block text-sm font-medium text-slate-300 mb-2">Doğum Tarihi</label>
+                                <input type="date" id="birthDate"
+                                    class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bloodType" class="block text-sm font-medium text-slate-300 mb-2">Kan Grubu *</label>
+                            <select id="bloodType" required
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
+                                <option value="">Seçiniz</option>
+                                <option value="A+">A Rh+</option>
+                                <option value="A-">A Rh-</option>
+                                <option value="B+">B Rh+</option>
+                                <option value="B-">B Rh-</option>
+                                <option value="AB+">AB Rh+</option>
+                                <option value="AB-">AB Rh-</option>
+                                <option value="0+">0 Rh+</option>
+                                <option value="0-">0 Rh-</option>
+                            </select>
+                        </div>
+
+                        <!-- Medical Info -->
+                        <div class="form-group">
+                            <label for="allergies" class="block text-sm font-medium text-slate-300 mb-2">
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                    Alerjiler
+                                </span>
+                            </label>
+                            <textarea id="allergies" rows="2" placeholder="Penisilin, fıstık, arı sokması..."
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="diseases" class="block text-sm font-medium text-slate-300 mb-2">Kronik Hastalıklar</label>
+                            <textarea id="diseases" rows="2" placeholder="Diyabet, kalp hastalığı, astım..."
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="medications" class="block text-sm font-medium text-slate-300 mb-2">Kullandığı İlaçlar</label>
+                            <textarea id="medications" rows="2" placeholder="İnsülin, Coumadin, Ventolin..."
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none"></textarea>
+                        </div>
+
+                        <!-- Emergency Contact -->
+                        <div class="pt-4 border-t border-slate-700">
+                            <h3 class="text-lg font-medium text-white mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                                Acil Durum İletişim
+                            </h3>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label for="emergencyContact" class="block text-sm font-medium text-slate-300 mb-2">Kişi Adı</label>
+                                    <input type="text" id="emergencyContact" placeholder="Fatma Yılmaz (Eş)"
+                                        class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
+                                </div>
+                                <div class="form-group">
+                                    <label for="emergencyPhone" class="block text-sm font-medium text-slate-300 mb-2">Telefon</label>
+                                    <input type="tel" id="emergencyPhone" placeholder="+90 555 123 4567"
+                                        class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="form-group">
+                            <label for="notes" class="block text-sm font-medium text-slate-300 mb-2">Ek Notlar</label>
+                            <textarea id="notes" rows="2" placeholder="Kalp pili var, sağ bacak protez..."
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Preview Section -->
+            <section class="order-1 lg:order-2 lg:sticky lg:top-8 lg:self-start">
+                <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 shadow-2xl">
+                    <h2 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        Kart Önizleme
+                    </h2>
+                    
+                    <!-- Emergency Card -->
+                    <div id="emergencyCard" class="emergency-card">
+                        <div class="card-header">
+                            <div class="card-logo">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                </svg>
+                            </div>
+                            <div class="card-title">
+                                <span class="title-main">ACİL DURUM KARTI</span>
+                                <span class="title-sub">Emergency Medical Card</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="card-info">
+                                <div class="info-row">
+                                    <span class="info-label">Ad Soyad:</span>
+                                    <span class="info-value" id="previewName">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Doğum Tarihi:</span>
+                                    <span class="info-value" id="previewBirthDate">-</span>
+                                </div>
+                                <div class="info-row blood-row">
+                                    <span class="info-label">Kan Grubu:</span>
+                                    <span class="blood-type" id="previewBloodType">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Alerjiler:</span>
+                                    <span class="info-value allergy-value" id="previewAllergies">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Acil İletişim:</span>
+                                    <span class="info-value" id="previewEmergency">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-qr">
+                                <div id="qrCode"></div>
+                                <span class="qr-label">Tüm Bilgiler İçin Tarayın</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <span>🏥 112'yi arayın - Call 112</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Download Button -->
+                    <button id="downloadBtn" type="button"
+                        class="mt-6 w-full py-4 px-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg shadow-red-500/30 transition-all duration-300 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Kartı İndir (PNG)
+                    </button>
+                    
+                    <p class="text-center text-slate-400 text-xs mt-4">
+                        💡 Kartı cüzdanınızda veya telefonunuzda saklayın
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 text-center text-slate-500 text-sm border-t border-slate-800">
+        <p>Acil Kart © 2024 - Verileriniz sadece cihazınızda saklanır</p>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script src="assets/js/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

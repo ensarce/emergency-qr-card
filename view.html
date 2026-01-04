@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#dc2626">
+    <title>🚑 Acil Durum Bilgileri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .emergency-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.4);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 40px rgba(220, 38, 38, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 10px 60px rgba(220, 38, 38, 0.6);
+            }
+        }
+
+        .emergency-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .emergency-title {
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .emergency-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .call-112 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-radius: 50px;
+            margin: 20px auto 0;
+            max-width: 280px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .call-112:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .call-112 svg {
+            width: 28px;
+            height: 28px;
+            animation: ring 1.5s ease-in-out infinite;
+        }
+
+        @keyframes ring {
+
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+
+            10%,
+            30% {
+                transform: rotate(-10deg);
+            }
+
+            20%,
+            40% {
+                transform: rotate(10deg);
+            }
+
+            50% {
+                transform: rotate(0);
+            }
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-card.critical {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: rgba(220, 38, 38, 0.4);
+        }
+
+        .info-card.warning {
+            background: rgba(251, 191, 36, 0.15);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .info-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-value {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .info-value.large {
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .blood-type {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 36px;
+            font-weight: 800;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-decoration: none;
+            padding: 18px 24px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 16px;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(16, 185, 129, 0.5);
+        }
+
+        .contact-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            margin: 24px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading state */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #dc2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error state */
+        .error-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading State -->
+    <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; opacity: 0.7;">Bilgiler yükleniyor...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="error-state hidden">
+        <div class="error-icon">⚠️</div>
+        <h2>Bilgi Bulunamadı</h2>
+        <p style="opacity: 0.7; margin-top: 10px;">QR kod geçersiz veya bilgiler eksik.</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="hidden">
+        <!-- Emergency Header -->
+        <div class="emergency-header">
+            <div class="emergency-icon">🚑</div>
+            <h1 class="emergency-title">Acil Durum Bilgileri</h1>
+            <p class="emergency-subtitle">Emergency Medical Information</p>
+
+            <a href="tel:112" class="call-112">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                    </path>
+                </svg>
+                112'yi Ara
+            </a>
+        </div>
+
+        <!-- Person Info -->
+        <div class="info-card">
+            <div class="info-label">👤 Kişi Bilgileri</div>
+            <div class="info-value large" id="personName">-</div>
+            <div style="margin-top: 8px; opacity: 0.7; font-size: 14px;" id="birthDate"></div>
+        </div>
+
+        <!-- Blood Type - Critical -->
+        <div class="info-card critical">
+            <div class="info-label">🩸 Kan Grubu / Blood Type</div>
+            <div class="blood-type" id="bloodType">-</div>
+        </div>
+
+        <!-- Allergies - Warning -->
+        <div class="info-card warning" id="allergyCard">
+            <div class="info-label">⚠️ ALERJİLER / ALLERGIES</div>
+            <div class="info-value" id="allergies" style="color: #fbbf24;">-</div>
+        </div>
+
+        <!-- Medical Info Grid -->
+        <div class="grid-2" id="medicalGrid">
+            <div class="info-card" id="diseaseCard">
+                <div class="info-label">🏥 Hastalıklar</div>
+                <div class="info-value" id="diseases">-</div>
+            </div>
+            <div class="info-card" id="medicationCard">
+                <div class="info-label">💊 İlaçlar</div>
+                <div class="info-value" id="medications">-</div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="info-card" id="notesCard">
+            <div class="info-label">📝 Önemli Notlar</div>
+            <div class="info-value" id="notes">-</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Emergency Contact -->
+        <div class="info-card" id="contactCard">
+            <div class="info-label">📞 Acil Durumda Aranacak Kişi</div>
+            <div class="info-value" id="emergencyContact">-</div>
+            <a href="#" class="contact-btn" id="callContactBtn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                    </path>
+                </svg>
+                <span id="phoneDisplay">Ara</span>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Bu bilgiler QR kod sahibi tarafından girilmiştir.</p>
+            <p style="margin-top: 8px;">Acil Kart PWA ile oluşturuldu</p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Get data from URL
+            const data = {
+                name: urlParams.get('n') || urlParams.get('name'),
+                birthDate: urlParams.get('bd') || urlParams.get('birth'),
+                bloodType: urlParams.get('b') || urlParams.get('blood'),
+                allergies: urlParams.get('a') || urlParams.get('allergy'),
+                diseases: urlParams.get('d') || urlParams.get('disease'),
+                medications: urlParams.get('m') || urlParams.get('med'),
+                emergencyContact: urlParams.get('ec') || urlParams.get('contact'),
+                emergencyPhone: urlParams.get('p') || urlParams.get('phone'),
+                notes: urlParams.get('nt') || urlParams.get('notes')
+            };
+
+            // Check if we have any data
+            const hasData = Object.values(data).some(v => v);
+
+            // Hide loading
+            document.getElementById('loadingState').classList.add('hidden');
+
+            if (!hasData) {
+                // Show error state
+                document.getElementById('errorState').classList.remove('hidden');
+                return;
+            }
+
+            // Show main content
+            document.getElementById('mainContent').classList.remove('hidden');
+
+            // Populate data
+            if (data.name) {
+                document.getElementById('personName').textContent = data.name;
+            }
+
+            if (data.birthDate) {
+                document.getElementById('birthDate').textContent = 'Doğum: ' + data.birthDate;
+            }
+
+            if (data.bloodType) {
+                document.getElementById('bloodType').textContent = data.bloodType;
+            }
+
+            if (data.allergies) {
+                document.getElementById('allergies').textContent = data.allergies;
+            } else {
+                document.getElementById('allergyCard').classList.add('hidden');
+            }
+
+            if (data.diseases) {
+                document.getElementById('diseases').textContent = data.diseases;
+            } else {
+                document.getElementById('diseaseCard').classList.add('hidden');
+            }
+
+            if (data.medications) {
+                document.getElementById('medications').textContent = data.medications;
+            } else {
+                document.getElementById('medicationCard').classList.add('hidden');
+            }
+
+            if (data.notes) {
+                document.getElementById('notes').textContent = data.notes;
+            } else {
+                document.getElementById('notesCard').classList.add('hidden');
+            }
+
+            if (data.emergencyContact || data.emergencyPhone) {
+                let contactText = data.emergencyContact || '';
+                document.getElementById('emergencyContact').textContent = contactText;
+
+                if (data.emergencyPhone) {
+                    document.getElementById('callContactBtn').href = 'tel:' + data.emergencyPhone;
+                    document.getElementById('phoneDisplay').textContent = data.emergencyPhone + ' Ara';
+                } else {
+                    document.getElementById('callContactBtn').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('contactCard').classList.add('hidden');
+            }
+
+            // Hide empty medical grid if both are empty
+            if (!data.diseases && !data.medications) {
+                document.getElementById('medicalGrid').classList.add('hidden');
+            }
+
+        })();
+    </script>
+</body>
+
+</html>

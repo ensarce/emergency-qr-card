@@ -1,0 +1,384 @@
+/* ===================================
+   Emergency QR Card - Custom Styles
+   Credit Card Look & Feel
+   =================================== */
+
+/* CSS Custom Properties */
+:root {
+    --card-bg-start: #1a1a2e;
+    --card-bg-end: #16213e;
+    --card-border: rgba(255, 255, 255, 0.1);
+    --accent-red: #dc2626;
+    --accent-red-light: #ef4444;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+}
+
+/* Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+/* Form Input Enhancements */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===================================
+   Emergency Card - Credit Card Style
+   =================================== */
+
+.emergency-card {
+    width: 100%;
+    max-width: 450px;
+    min-height: 280px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, var(--card-bg-start) 0%, var(--card-bg-end) 50%, #0f3460 100%);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px var(--card-border),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Card Background Pattern */
+.emergency-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(220, 38, 38, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.emergency-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -30%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.card-logo {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-red-light) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+}
+
+.card-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.title-main {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.title-sub {
+    font-size: 10px;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+/* Card Body */
+.card-body {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.info-label {
+    font-size: 9px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.allergy-value {
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+/* Blood Type Special Styling */
+.blood-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.blood-type {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ef4444;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* QR Code Section */
+.card-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+#qrCode {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+#qrCode img {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.qr-label {
+    font-size: 8px;
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 100px;
+}
+
+/* Card Footer */
+.card-footer {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--card-border);
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-secondary);
+    position: relative;
+    z-index: 1;
+}
+
+/* ===================================
+   Responsive Adjustments
+   =================================== */
+
+@media (max-width: 640px) {
+    .emergency-card {
+        padding: 16px;
+        max-width: 100%;
+    }
+
+    .card-logo {
+        width: 36px;
+        height: 36px;
+    }
+
+    .card-logo svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .title-main {
+        font-size: 12px;
+    }
+
+    .title-sub {
+        font-size: 9px;
+    }
+
+    .info-label {
+        font-size: 7px;
+    }
+
+    .info-value {
+        font-size: 10px;
+    }
+
+    .blood-type {
+        font-size: 16px;
+    }
+
+    #qrCode {
+        width: 70px;
+        height: 70px;
+        padding: 5px;
+    }
+
+    .qr-label {
+        font-size: 6px;
+        max-width: 70px;
+    }
+}
+
+/* ===================================
+   Animation Effects
+   =================================== */
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.blood-type {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Card Hover Effect */
+.emergency-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (hover: hover) {
+    .emergency-card:hover {
+        transform: translateY(-4px);
+        box-shadow:
+            0 30px 60px -12px rgba(0, 0, 0, 0.6),
+            0 0 0 1px var(--card-border),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* ===================================
+   Print Styles for Download
+   =================================== */
+
+@media print {
+    body {
+        background: white !important;
+    }
+
+    .emergency-card {
+        box-shadow: none;
+        border: 2px solid #ccc;
+    }
+}
+
+/* ===================================
+   Loading State
+   =================================== */
+
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+}
+
+/* ===================================
+   Button Hover Glow
+   =================================== */
+
+#downloadBtn {
+    position: relative;
+    overflow: hidden;
+}
+
+#downloadBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+#downloadBtn:hover::before {
+    left: 100%;
+}
