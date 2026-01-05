@@ -473,17 +473,11 @@
             btn.disabled = true;
             btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle></svg>';
 
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(resolve => setTimeout(resolve, 300));
 
-            // Temporarily switch to normal mode for sharing
-            const wasStoryMode = isStoryMode;
-            if (wasStoryMode) {
-                elements.emergencyCard.classList.remove('story-mode');
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-
-            const cardWidth = 450;
-            const cardHeight = elements.emergencyCard.scrollHeight + 20;
+            // Determine dimensions based on mode
+            const cardWidth = isStoryMode ? 320 : 450;
+            const cardHeight = elements.emergencyCard.scrollHeight + 30;
 
             const canvas = await html2canvas(elements.emergencyCard, {
                 scale: 3,
@@ -492,24 +486,44 @@
                 backgroundColor: '#1a1a2e',
                 logging: false,
                 useCORS: true,
+                scrollX: 0,
+                scrollY: 0,
                 onclone: function (clonedDoc) {
                     const clonedCard = clonedDoc.getElementById('emergencyCard');
                     if (clonedCard) {
-                        clonedCard.classList.remove('story-mode');
+                        // Fix styling for clean capture
+                        clonedCard.style.transform = 'none';
+                        clonedCard.style.animation = 'none';
                         clonedCard.style.width = cardWidth + 'px';
                         clonedCard.style.maxWidth = cardWidth + 'px';
+                        clonedCard.style.margin = '0';
+                        clonedCard.style.boxShadow = 'none';
+                        clonedCard.style.border = '2px solid rgba(255,255,255,0.15)';
+                        clonedCard.style.borderRadius = '20px';
+                        clonedCard.style.overflow = 'visible';
+
+                        // Ensure footer is visible
+                        const footer = clonedCard.querySelector('.card-footer');
+                        if (footer) {
+                            footer.style.display = 'block';
+                            footer.style.paddingBottom = '16px';
+                        }
+
+                        // Fix QR size
+                        const qr = clonedDoc.getElementById('qrCode');
+                        if (qr) {
+                            qr.style.width = isStoryMode ? '100px' : '80px';
+                            qr.style.height = isStoryMode ? '100px' : '80px';
+                        }
                     }
                 }
             });
 
-            // Restore story mode if it was active
-            if (wasStoryMode) {
-                elements.emergencyCard.classList.add('story-mode');
-            }
-
             canvas.toBlob(async (blob) => {
                 if (!blob) {
                     alert(currentLang === 'tr' ? 'Paylaşım başarısız' : 'Share failed');
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
                     return;
                 }
 
