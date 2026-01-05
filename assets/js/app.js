@@ -176,15 +176,15 @@
         // Clear previous QR code
         elements.qrCodeContainer.innerHTML = '';
 
-        // Generate new QR code as image (not canvas) for html2canvas compatibility
+        // Generate new QR code - high quality for fast scanning
         try {
             qrCodeInstance = new QRCode(elements.qrCodeContainer, {
                 text: qrText || 'Acil Durum Kartı',
-                width: 80,
-                height: 80,
+                width: 200,
+                height: 200,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.L
+                correctLevel: QRCode.CorrectLevel.M
             });
 
             // Wait for QR to render, then ensure it's an img element
@@ -230,25 +230,34 @@
     }
 
     function formatQRData(data) {
-        // Generate URL that opens beautiful emergency info page
-        // Use current origin or a default base URL
-        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-        const viewUrl = baseUrl + 'view.html';
+        // Plain text format - readable offline without internet
+        // QR scanner will display this text directly
+        let lines = [];
 
-        // Build URL parameters (short keys to save space)
-        const params = new URLSearchParams();
+        lines.push('🚨 ACİL DURUM KARTI');
+        lines.push('═══════════════════');
 
-        if (data.name) params.set('n', data.name);
-        if (data.bloodType) params.set('b', data.bloodType);
-        if (data.birthDate) params.set('bd', formatDate(new Date(data.birthDate)));
-        if (data.allergies) params.set('a', data.allergies.substring(0, 50));
-        if (data.diseases) params.set('d', data.diseases.substring(0, 40));
-        if (data.medications) params.set('m', data.medications.substring(0, 40));
-        if (data.emergencyContact) params.set('ec', data.emergencyContact.substring(0, 30));
-        if (data.emergencyPhone) params.set('p', data.emergencyPhone);
-        if (data.notes) params.set('nt', data.notes.substring(0, 40));
+        if (data.name) lines.push('👤 ' + data.name);
+        if (data.bloodType) lines.push('🩸 Kan: ' + data.bloodType);
+        if (data.birthDate) {
+            const date = new Date(data.birthDate);
+            lines.push('📅 Doğum: ' + formatDate(date));
+        }
+        if (data.allergies) lines.push('⚠️ Alerji: ' + data.allergies.substring(0, 50));
+        if (data.diseases) lines.push('🏥 Hastalık: ' + data.diseases.substring(0, 40));
+        if (data.medications) lines.push('💊 İlaç: ' + data.medications.substring(0, 40));
 
-        return viewUrl + '?' + params.toString();
+        if (data.emergencyPhone || data.emergencyContact) {
+            lines.push('───────────────────');
+            lines.push('📞 ACİL ARAYIN:');
+            if (data.emergencyContact) lines.push(data.emergencyContact);
+            if (data.emergencyPhone) lines.push('TEL: ' + data.emergencyPhone);
+        }
+
+        lines.push('───────────────────');
+        lines.push('🆘 112 ARAYIN');
+
+        return lines.join('\n');
     }
 
     // ===================================
