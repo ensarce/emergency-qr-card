@@ -3,11 +3,12 @@
  * Enables offline functionality
  */
 
-const CACHE_NAME = 'acil-kart-v2';
+const CACHE_NAME = 'acil-kart-v3';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
     '/view.html',
+    '/card.html',
     '/assets/css/style.css',
     '/assets/js/app.js',
     '/manifest.json'

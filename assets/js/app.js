@@ -230,33 +230,38 @@
     }
 
     function formatQRData(data) {
-        // Plain text format - readable offline without internet
-        // QR scanner will display this text directly (no emojis for compatibility)
-        let lines = [];
+        // URL format with base64 encoded data - opens beautiful card page
+        const baseUrl = 'https://ensarce.github.io/emergency-qr-card/card.html';
 
-        lines.push('=== ACIL DURUM ===');
+        // Build compact data object with short keys
+        const cardData = {};
 
-        if (data.name) lines.push('Ad: ' + data.name);
-        if (data.bloodType) lines.push('Kan: ' + data.bloodType);
-        if (data.birthDate) {
-            const date = new Date(data.birthDate);
-            lines.push('Dogum: ' + formatDate(date));
+        if (data.name) cardData.ad = data.name;
+        if (data.bloodType) cardData.kan = data.bloodType;
+        if (data.allergies) cardData.alerji = data.allergies.substring(0, 50);
+
+        // Combine emergency contact info
+        const acilParts = [];
+        if (data.emergencyContact) acilParts.push(data.emergencyContact);
+        if (data.emergencyPhone) acilParts.push(data.emergencyPhone);
+        if (acilParts.length > 0) cardData.acil = acilParts.join(' - ');
+
+        // Notes (diseases, medications, other notes combined)
+        const notParts = [];
+        if (data.diseases) notParts.push(data.diseases);
+        if (data.medications) notParts.push('Ilac: ' + data.medications);
+        if (data.notes) notParts.push(data.notes);
+        if (notParts.length > 0) cardData.not = notParts.join('; ').substring(0, 80);
+
+        // Encode to base64
+        try {
+            const jsonStr = JSON.stringify(cardData);
+            const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
+            return baseUrl + '#' + base64;
+        } catch (e) {
+            console.error('QR encode error:', e);
+            return baseUrl;
         }
-        if (data.allergies) lines.push('ALERJI: ' + data.allergies.substring(0, 40));
-        if (data.diseases) lines.push('Hastalik: ' + data.diseases.substring(0, 30));
-        if (data.medications) lines.push('Ilac: ' + data.medications.substring(0, 30));
-
-        if (data.emergencyPhone || data.emergencyContact) {
-            lines.push('---');
-            lines.push('ACIL ILETISIM:');
-            if (data.emergencyContact) lines.push(data.emergencyContact);
-            if (data.emergencyPhone) lines.push(data.emergencyPhone);
-        }
-
-        lines.push('---');
-        lines.push('112 ARAYIN');
-
-        return lines.join('\n');
     }
 
     // ===================================

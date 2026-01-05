@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#dc2626">
+    <title>Acil Durum Kartı</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1e1e2e 100%);
+            min-height: 100vh;
+        }
+
+        .blood-badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+            }
+        }
+
+        .card-glow {
+            box-shadow: 0 0 60px rgba(220, 38, 38, 0.2), 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .emergency-banner {
+            background: linear-gradient(90deg, #dc2626, #b91c1c);
+            animation: bannerPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes bannerPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.9;
+            }
+        }
+
+        .info-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .offline-badge {
+            display: none;
+        }
+
+        .offline .offline-badge {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center p-4">
+
+    <!-- Loading State -->
+    <div id="loading" class="text-white text-center">
+        <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4">
+        </div>
+        <p>Kart yükleniyor...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="hidden text-center text-white max-w-sm">
+        <div class="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                </path>
+            </svg>
+        </div>
+        <h2 class="text-xl font-bold mb-2">Kart Bulunamadı</h2>
+        <p class="text-gray-400">QR kodunu tekrar okutun veya yeni bir kart oluşturun.</p>
+        <a href="index.html"
+            class="inline-block mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition-colors">
+            Kart Oluştur
+        </a>
+    </div>
+
+    <!-- Card Display -->
+    <div id="card" class="hidden w-full max-w-md">
+
+        <!-- Offline Badge -->
+        <div
+            class="offline-badge items-center justify-center gap-2 mb-4 py-2 px-4 bg-yellow-500/20 text-yellow-400 text-sm rounded-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3">
+                </path>
+            </svg>
+            Çevrimdışı Görünüm
+        </div>
+
+        <!-- Emergency Banner -->
+        <div class="emergency-banner rounded-t-2xl py-3 px-4 flex items-center justify-center gap-3">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                </path>
+            </svg>
+            <span class="text-white font-bold text-lg tracking-wide">ACİL DURUM KARTI</span>
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                </path>
+            </svg>
+        </div>
+
+        <!-- Main Card -->
+        <div class="bg-slate-800/90 backdrop-blur-xl rounded-b-2xl card-glow overflow-hidden">
+
+            <!-- Name & Blood Type Header -->
+            <div class="p-6 bg-gradient-to-r from-slate-800 to-slate-700 border-b border-slate-600/50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Ad Soyad</p>
+                        <h1 id="nameDisplay" class="text-2xl font-bold text-white">-</h1>
+                    </div>
+                    <div id="bloodBadge"
+                        class="blood-badge w-16 h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
+                        <span id="bloodDisplay" class="text-white font-black text-xl">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Sections -->
+            <div class="p-4 space-y-0">
+
+                <!-- Allergies -->
+                <div id="allergySection" class="info-row py-4 hidden">
+                    <div class="flex items-start gap-3">
+                        <div
+                            class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-yellow-400 text-xs uppercase tracking-wider font-semibold mb-1">⚠️ Alerjiler
+                            </p>
+                            <p id="allergyDisplay" class="text-white font-medium">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div id="contactSection" class="info-row py-4 hidden">
+                    <div class="flex items-start gap-3">
+                        <div
+                            class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-green-400 text-xs uppercase tracking-wider font-semibold mb-1">📞 Acil
+                                İletişim</p>
+                            <p id="contactDisplay" class="text-white font-medium">-</p>
+                        </div>
+                        <a id="callBtn" href="#"
+                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-colors hidden">
+                            Ara
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div id="notesSection" class="info-row py-4 hidden">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-blue-400 text-xs uppercase tracking-wider font-semibold mb-1">📝 Notlar</p>
+                            <p id="notesDisplay" class="text-white font-medium">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 112 Call Button -->
+            <div class="p-4 bg-slate-900/50">
+                <a href="tel:112"
+                    class="block w-full py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-center font-bold text-lg rounded-xl transition-all shadow-lg shadow-red-500/30">
+                    🚨 112'yi Ara
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-slate-500 text-xs mt-4">
+            Acil Kart © 2024 - Hayat kurtaran bilgiler
+        </p>
+    </div>
+
+    <script>
+        // Parse data from URL hash
+        function parseCardData() {
+            try {
+                const hash = window.location.hash.substring(1);
+                if (!hash) return null;
+
+                // Decode base64
+                const jsonStr = atob(decodeURIComponent(hash));
+                return JSON.parse(jsonStr);
+            } catch (e) {
+                console.error('Data parse error:', e);
+                return null;
+            }
+        }
+
+        // Display card data
+        function displayCard(data) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('card').classList.remove('hidden');
+
+            // Name
+            if (data.ad) {
+                document.getElementById('nameDisplay').textContent = data.ad;
+            }
+
+            // Blood type
+            if (data.kan) {
+                document.getElementById('bloodDisplay').textContent = data.kan;
+                // Color code blood badge based on type
+                const badge = document.getElementById('bloodBadge');
+                if (data.kan.includes('-')) {
+                    badge.classList.remove('from-red-500', 'to-red-700');
+                    badge.classList.add('from-amber-500', 'to-amber-700');
+                }
+            }
+
+            // Allergies
+            if (data.alerji) {
+                document.getElementById('allergySection').classList.remove('hidden');
+                document.getElementById('allergyDisplay').textContent = data.alerji;
+            }
+
+            // Emergency Contact
+            if (data.acil) {
+                document.getElementById('contactSection').classList.remove('hidden');
+                document.getElementById('contactDisplay').textContent = data.acil;
+
+                // Extract phone number for call button
+                const phoneMatch = data.acil.match(/[\d\s\+\-]+/);
+                if (phoneMatch) {
+                    const phone = phoneMatch[0].replace(/\s/g, '');
+                    if (phone.length >= 7) {
+                        const callBtn = document.getElementById('callBtn');
+                        callBtn.href = 'tel:' + phone;
+                        callBtn.classList.remove('hidden');
+                    }
+                }
+            }
+
+            // Notes
+            if (data.not) {
+                document.getElementById('notesSection').classList.remove('hidden');
+                document.getElementById('notesDisplay').textContent = data.not;
+            }
+        }
+
+        // Show error
+        function showError() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+        }
+
+        // Check offline status
+        function checkOffline() {
+            if (!navigator.onLine) {
+                document.body.classList.add('offline');
+            }
+
+            window.addEventListener('online', () => document.body.classList.remove('offline'));
+            window.addEventListener('offline', () => document.body.classList.add('offline'));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkOffline();
+
+            const data = parseCardData();
+            if (data && (data.ad || data.kan)) {
+                displayCard(data);
+            } else {
+                showError();
+            }
+        });
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(e => console.log('SW error:', e));
+        }
+    </script>
+</body>
+
+</html>
