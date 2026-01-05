@@ -475,7 +475,14 @@
 
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            const cardWidth = isStoryMode ? 360 : 450;
+            // Temporarily switch to normal mode for sharing
+            const wasStoryMode = isStoryMode;
+            if (wasStoryMode) {
+                elements.emergencyCard.classList.remove('story-mode');
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            const cardWidth = 450;
             const cardHeight = elements.emergencyCard.scrollHeight + 20;
 
             const canvas = await html2canvas(elements.emergencyCard, {
@@ -484,8 +491,21 @@
                 height: cardHeight,
                 backgroundColor: '#1a1a2e',
                 logging: false,
-                useCORS: true
+                useCORS: true,
+                onclone: function (clonedDoc) {
+                    const clonedCard = clonedDoc.getElementById('emergencyCard');
+                    if (clonedCard) {
+                        clonedCard.classList.remove('story-mode');
+                        clonedCard.style.width = cardWidth + 'px';
+                        clonedCard.style.maxWidth = cardWidth + 'px';
+                    }
+                }
             });
+
+            // Restore story mode if it was active
+            if (wasStoryMode) {
+                elements.emergencyCard.classList.add('story-mode');
+            }
 
             canvas.toBlob(async (blob) => {
                 if (!blob) {
