@@ -286,9 +286,11 @@
             // Wait a moment for any pending renders
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            // Generate canvas from card with fixed dimensions
-            const cardWidth = 450; // Fixed card width
-            const cardHeight = elements.emergencyCard.scrollHeight + 20; // Add padding for footer
+            // Generate canvas from card - adjust dimensions based on mode
+            const cardWidth = isStoryMode ? 320 : 450;
+            // Get actual content height without excess
+            const actualHeight = elements.emergencyCard.getBoundingClientRect().height;
+            const cardHeight = Math.min(actualHeight + 10, isStoryMode ? 600 : 400);
 
             const canvas = await html2canvas(elements.emergencyCard, {
                 scale: 3,
@@ -301,8 +303,8 @@
                 imageTimeout: 0,
                 scrollX: 0,
                 scrollY: 0,
-                windowWidth: cardWidth + 100,
-                windowHeight: cardHeight + 100,
+                windowWidth: cardWidth + 50,
+                windowHeight: cardHeight + 50,
                 onclone: function (clonedDoc) {
                     const clonedCard = clonedDoc.getElementById('emergencyCard');
                     if (clonedCard) {
@@ -311,29 +313,31 @@
                         clonedCard.style.animation = 'none';
                         clonedCard.style.width = cardWidth + 'px';
                         clonedCard.style.maxWidth = cardWidth + 'px';
-                        clonedCard.style.minHeight = cardHeight + 'px';
+                        clonedCard.style.height = 'auto';
+                        clonedCard.style.minHeight = 'unset';
                         clonedCard.style.margin = '0';
                         clonedCard.style.boxShadow = 'none';
                         clonedCard.style.border = '2px solid rgba(255,255,255,0.2)';
                         clonedCard.style.borderRadius = '16px';
-                        clonedCard.style.overflow = 'visible';
-                        clonedCard.style.paddingBottom = '20px';
+                        clonedCard.style.overflow = 'hidden';
+                        clonedCard.style.paddingBottom = '12px';
 
                         // Ensure footer is visible
                         const footer = clonedCard.querySelector('.card-footer');
                         if (footer) {
                             footer.style.display = 'block';
-                            footer.style.marginTop = '12px';
-                            footer.style.paddingTop = '12px';
+                            footer.style.marginTop = '8px';
+                            footer.style.paddingTop = '8px';
                         }
 
-                        // Ensure QR is visible
+                        // Ensure QR is visible - adjust size based on mode
                         const qr = clonedDoc.getElementById('qrCode');
                         if (qr) {
-                            qr.style.width = '80px';
-                            qr.style.height = '80px';
-                            qr.style.maxWidth = '80px';
-                            qr.style.maxHeight = '80px';
+                            const qrSize = isStoryMode ? '100px' : '80px';
+                            qr.style.width = qrSize;
+                            qr.style.height = qrSize;
+                            qr.style.maxWidth = qrSize;
+                            qr.style.maxHeight = qrSize;
                         }
                     }
                 }
@@ -600,8 +604,37 @@
             }
         });
 
-        // Update card labels
-        const labels = {
+        // Update form labels (including ones without data attributes)
+        const formLabels = {
+            'Ad Soyad': 'Full Name',
+            'Doğum Tarihi': 'Date of Birth',
+            'Kan Grubu': 'Blood Type',
+            'Alerjiler': 'Allergies',
+            'Kronik Hastalıklar': 'Chronic Diseases',
+            'Kullandığı İlaçlar': 'Medications',
+            'Acil Durumda Aranacak Kişi': 'Emergency Contact Person',
+            'Telefon Numarası': 'Phone Number',
+            'Ek Notlar': 'Additional Notes',
+            'Bilgilerinizi Girin': 'Enter Your Information',
+            'Kart Önizleme': 'Card Preview',
+            'Seçiniz': 'Select'
+        };
+
+        // Update all labels
+        document.querySelectorAll('label, h2').forEach(el => {
+            const text = el.textContent.replace(' *', '').trim();
+            const enText = formLabels[text];
+            const trText = Object.keys(formLabels).find(k => formLabels[k] === text);
+
+            if (lang === 'en' && enText) {
+                el.textContent = el.textContent.includes('*') ? enText + ' *' : enText;
+            } else if (lang === 'tr' && trText) {
+                el.textContent = el.textContent.includes('*') ? trText + ' *' : trText;
+            }
+        });
+
+        // Update card preview labels
+        const cardLabels = {
             'Ad Soyad:': 'Full Name:',
             'Doğum Tarihi:': 'Date of Birth:',
             'Kan Grubu:': 'Blood Type:',
@@ -611,13 +644,19 @@
         };
 
         document.querySelectorAll('.info-label, .qr-label').forEach(el => {
-            const trText = Object.keys(labels).find(key =>
-                el.textContent === key || el.textContent === labels[key]
+            const trText = Object.keys(cardLabels).find(key =>
+                el.textContent === key || el.textContent === cardLabels[key]
             );
             if (trText) {
-                el.textContent = lang === 'tr' ? trText : labels[trText];
+                el.textContent = lang === 'tr' ? trText : cardLabels[trText];
             }
         });
+
+        // Update select option
+        const select = document.getElementById('bloodType');
+        if (select && select.options[0]) {
+            select.options[0].textContent = lang === 'tr' ? 'Seçiniz' : 'Select';
+        }
     }
 
     // ===================================

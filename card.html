@@ -233,8 +233,9 @@
                 const hash = window.location.hash.substring(1);
                 if (!hash) return null;
 
-                // Decode base64
-                const jsonStr = atob(decodeURIComponent(hash));
+                // Decode base64 with proper UTF-8 support
+                const base64 = decodeURIComponent(hash);
+                const jsonStr = decodeURIComponent(escape(atob(base64)));
                 return JSON.parse(jsonStr);
             } catch (e) {
                 console.error('Data parse error:', e);
