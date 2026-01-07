@@ -181,15 +181,18 @@
                                 </path>
                             </svg>
                         </div>
-                        <div class="flex-1">
-                            <p class="text-green-400 text-xs uppercase tracking-wider font-semibold mb-1">📞 Acil
-                                İletişim</p>
-                            <p id="contactDisplay" class="text-white font-medium">-</p>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <p class="text-green-400 text-xs uppercase tracking-wider font-semibold">📞 Acil
+                                    İletişim</p>
+                                <a id="callBtn" href="#"
+                                    class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition-colors hidden flex-shrink-0">
+                                    Ara
+                                </a>
+                            </div>
+                            <p id="contactName" class="text-white font-medium truncate">-</p>
+                            <p id="contactPhone" class="text-green-300 text-sm font-mono mt-1 hidden"></p>
                         </div>
-                        <a id="callBtn" href="#"
-                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-colors hidden">
-                            Ara
-                        </a>
                     </div>
                 </div>
 
@@ -274,15 +277,27 @@
             // Emergency Contact
             if (data.acil) {
                 document.getElementById('contactSection').classList.remove('hidden');
-                document.getElementById('contactDisplay').textContent = data.acil;
+
+                // Split name and phone
+                const parts = data.acil.split(' - ');
+                const name = parts[0] || data.acil;
+                const phone = parts[1] || '';
+
+                document.getElementById('contactName').textContent = name;
+
+                if (phone) {
+                    const phoneEl = document.getElementById('contactPhone');
+                    phoneEl.textContent = phone;
+                    phoneEl.classList.remove('hidden');
+                }
 
                 // Extract phone number for call button
                 const phoneMatch = data.acil.match(/[\d\s\+\-]+/);
                 if (phoneMatch) {
-                    const phone = phoneMatch[0].replace(/\s/g, '');
-                    if (phone.length >= 7) {
+                    const phoneNum = phoneMatch[0].replace(/\s/g, '');
+                    if (phoneNum.length >= 7) {
                         const callBtn = document.getElementById('callBtn');
-                        callBtn.href = 'tel:' + phone;
+                        callBtn.href = 'tel:' + phoneNum;
                         callBtn.classList.remove('hidden');
                     }
                 }
