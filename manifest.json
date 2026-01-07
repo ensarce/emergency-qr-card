@@ -2,12 +2,12 @@
     "name": "Acil Kart - Emergency Life-Saver QR Card",
     "short_name": "Acil Kart",
     "description": "Hayat kurtaran acil durum bilgilerinizi QR kod ile taşıyın",
-    "start_url": "/",
+    "start_url": "/emergency-qr-card/index.html",
     "display": "standalone",
     "background_color": "#0f172a",
     "theme_color": "#dc2626",
     "orientation": "portrait-primary",
-    "scope": "/",
+    "scope": "/emergency-qr-card/",
     "lang": "tr",
     "icons": [
         {
@@ -23,7 +23,11 @@
             "purpose": "any maskable"
         }
     ],
-    "categories": ["health", "medical", "utilities"],
+    "categories": [
+        "health",
+        "medical",
+        "utilities"
+    ],
     "screenshots": [],
     "prefer_related_applications": false
 }
